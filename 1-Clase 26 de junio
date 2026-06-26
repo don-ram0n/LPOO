@@ -1,1 +1,34 @@
+class pelota {
+  PVector pos;
+  PVector vel;
+  float r = 10;
+  color c = (255);
+  
+pelota(){
+  pos = new PVector(width/2, height/2); 
+  vel = new PVector(random (10),random (10));
+  
+}
 
+void mover(){
+  pos.add (vel);   
+} 
+ 
+void mostrar(){
+  fill (255);
+  circle (pos.x, pos.y, r);
+}  
+ 
+ 
+pelota p;
+  void setup (){
+    size (800, 600);
+    p = new pelota();     
+}
+
+void draw (){
+  p.mover();
+  p.mostrar();
+}
+
+}
