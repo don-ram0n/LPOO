@@ -1,0 +1,62 @@
+float circuloX;
+float circuloY;
+
+float radio = 30;
+
+float rectX;
+float rectY;
+float rectAncho = 150;
+float rectAlto = 100;
+
+boolean colision = false;
+
+void setup() {
+  size(800, 600);
+
+  circuloX = 100;
+  circuloY = height/2;
+
+  rectX = width/2 - rectAncho/2;
+  rectY = height/2 - rectAlto/2;
+}
+
+void draw() {
+  background(220);
+
+  // El círculo sigue al mouse
+  circuloX = mouseX;
+  circuloY = mouseY;
+
+  // Comprobar colisión
+  colision = detectarColision();
+
+  // Cambiar color según la colisión
+  if (colision) {
+    fill(255, 0, 0);
+  } else {
+    fill(0, 200, 100);
+  }
+
+  rect(rectX, rectY, rectAncho, rectAlto);
+
+  // Dibujar círculo
+  fill(50, 100, 255);
+  ellipse(circuloX, circuloY, radio*2, radio*2);
+}
+
+boolean detectarColision() {
+
+  // Buscar el punto del rectángulo más cercano al círculo
+  float puntoX = constrain(circuloX, rectX, rectX + rectAncho);
+  float puntoY = constrain(circuloY, rectY, rectY + rectAlto);
+
+  // Calcular distancia entre ese punto y el círculo
+  float distancia = dist(circuloX, circuloY, puntoX, puntoY);
+
+  // Hay colisión si la distancia es menor o igual al radio
+  if (distancia <= radio) {
+    return true;
+  } else {
+    return false;
+  }
+}
