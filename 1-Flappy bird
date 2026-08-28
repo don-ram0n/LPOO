@@ -1,0 +1,26 @@
+ArrayList <cuadrado> tubos;
+Pelota bird;
+float ultimoPar = 0;
+PVector G = newPVector (0, 2);
+
+void borrarTubos (){
+  for (int; = tubos.size()-1; i>=0; i++){
+     cuadrado aux = tubos.get(i);
+if (aux.pos.x < 0){
+  tubos.remove(i)}
+  }
+}
+
+void AgregarTubos (){
+  float tActual = millis ();
+  float dt = tActual - ultimoPar;
+if (dt > 5000){
+  tubos.add (newCuadrado ());
+  tubos.add (newCuadrado ());
+  ultimoPar = tActual;
+}
+}
+
+void setup (){ size (800, 600);
+    tubos = newArrayList <cuadrado> ();
+    bird = newPelota(100 , )
