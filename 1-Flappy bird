@@ -1,26 +1,152 @@
 ArrayList <cuadrado> tubos;
 Pelota bird;
 float ultimoPar = 0;
-PVector G = newPVector (0, 2);
+PVector G = new PVector(0, 0.4); 
 
-void borrarTubos (){
-  for (int; = tubos.size()-1; i>=0; i++){
-     cuadrado aux = tubos.get(i);
-if (aux.pos.x < 0){
-  tubos.remove(i)}
+void setup() { 
+  size(800, 600);
+  tubos = new ArrayList<cuadrado>();
+  bird = new Pelota(100, height/2);
+}
+
+void draw() {
+  background(135, 206, 235); // Fondo azul cielo 
+  AgregarTubos();
+  bird.addFuerza(G);
+  bird.mover();
+  bird.mostrar();
+  for (int i = tubos.size() - 1; i >= 0; i--) {
+    cuadrado t = tubos.get(i);
+    t.mover();
+    t.mostrar();
+    
+    if (comprobarColision(bird, t)) {
+      println("¡Game Over! Colisión detectada.");
+      reiniciarJuego();
+    }
+  }
+  borrarTubos();
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    bird.saltar();
   }
 }
 
-void AgregarTubos (){
-  float tActual = millis ();
+void AgregarTubos() {
+  float tActual = millis();
   float dt = tActual - ultimoPar;
-if (dt > 5000){
-  tubos.add (newCuadrado ());
-  tubos.add (newCuadrado ());
-  ultimoPar = tActual;
-}
+  
+  if (dt > 2500) {
+    float anchoTubo = 60;
+    float espacioEntreTubos = 150; // El hueco por donde pasa el ave
+    float alturaMinima = 50;
+    float altoSuperior = random(alturaMinima, height - espacioEntreTubos - alturaMinima);
+    float altoInferior = height - altoSuperior - espacioEntreTubos;
+    tubos.add(new cuadrado(width, 0, anchoTubo, altoSuperior));
+
+    tubos.add(new cuadrado(width, height - altoInferior, anchoTubo, altoInferior));
+    
+    ultimoPar = tActual;
+  }
 }
 
-void setup (){ size (800, 600);
-    tubos = newArrayList <cuadrado> ();
-    bird = newPelota(100 , )
+void borrarTubos() {
+  for (int i = tubos.size() - 1; i >= 0; i--) {
+    cuadrado aux = tubos.get(i);
+    if (aux.pos.x + aux.ancho < 0) {
+      tubos.remove(i);
+    }
+  }
+}
+
+// Función auxiliar para reiniciar el juego en caso de colisión
+void reiniciarJuego() {
+  tubos.clear();
+  bird = new Pelota(100, height/2);
+  ultimoPar = millis();
+}
+
+boolean comprobarColision(Pelota p, cuadrado c) {
+  float cercaX = max(c.pos.x, min(p.pos.x, c.pos.x + c.ancho));
+  float cercaY = max(c.pos.y, min(p.pos.y, c.pos.y + c.alto));
+  float distanciaX = p.pos.x - cercaX;
+  float distanciaY = p.pos.y - cercaY;
+  
+  float distanciaCuadrada = (distanciaX * distanciaX) + (distanciaY * distanciaY);
+  return distanciaCuadrada < (p.radio * p.radio);
+}
+
+// CLASE PELOTA (El Personaje)
+
+class Pelota {
+  PVector pos;
+  PVector vel;
+  PVector acel;
+  float radio;
+  float limiteSalto = -7; // Fuerza del impulso hacia arriba
+
+  Pelota(float x, float y) {
+    pos = new PVector(x, y);
+    vel = new PVector(0, 0);
+    acel = new PVector(0, 0);
+    radio = 16; // Diámetro de 32 píxeles
+  }
+
+  void addFuerza(PVector fuerza) {
+    acel.add(fuerza);
+  }
+
+  void mover() {
+    vel.add(acel);
+    pos.add(vel);
+    acel.mult(0);
+    
+    if (pos.y > height - radio) {
+      pos.y = height - radio;
+      vel.y = 0;
+    }
+    if (pos.y < radio) {
+      pos.y = radio;
+      vel.y = 0;
+    }
+  }
+
+  void saltar() {
+    vel.y = limiteSalto;
+  }
+
+  void mostrar() {
+    fill(255, 215, 0); // Color amarillo Flappy Bird
+    stroke(0);
+    strokeWeight(2);
+    circle(pos.x, pos.y, radio * 2);
+  }
+}
+
+class cuadrado {
+  PVector pos;
+  float ancho;
+  float alto;
+  float velocidadX = -3; 
+  cuadrado(float x, float y, float wight, float hight) {
+    pos = new PVector(x, y);
+    ancho = wight;
+    alto = hight;
+  }
+
+  void mover() {
+    pos.x += velocidadX;
+  }
+
+  void mostrar() {
+    fill(34, 139, 34); // Color verde tubo
+    stroke(0);
+    strokeWeight(2);
+    rect(pos.x, pos.y, ancho, alto);
+  }
+}
+
+
+
