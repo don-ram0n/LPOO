@@ -1,0 +1,27 @@
+ArrayList<dupla> tubos;
+Pelota bird;
+float ultimoPar = 0;
+PVector G = new PVector(0, 0.4);
+
+int estado = 0; 
+int puntos = 0;
+
+void setup() { 
+  size(800, 600);
+  tubos = new ArrayList<dupla>();
+  bird = new Pelota(100, height/2);
+}
+
+void draw() {
+  background(135, 206, 250);
+  
+  if (estado == 0) {
+    mostrarPantallaInicio();
+  } 
+  else if (estado == 1) {
+    actualizarJuego();
+  } 
+  else if (estado == 2) {
+    mostrarPantallaGameOver();
+  }
+}
